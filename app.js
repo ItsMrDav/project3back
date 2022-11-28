@@ -38,9 +38,21 @@ app.use((error, req, res, next) => {
   res.json({ message: error.message || "An unknown error occurred!" });
 });
 
+// mongoose
+//   .connect(
+//     "mongodb+srv://davut:IYaCZqrYe23TpSEc@cluster0.bljn9yb.mongodb.net/DataTest?retryWrites=true&w=majority"
+//   )
+//   .then((x) => {
+//     console.log(`connected ${x.connections[0].name}`);
+//     app.listen(5000);
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
+
 mongoose
   .connect(
-    "mongodb+srv://davut:project3back@cluster0.u66jd40.mongodb.net/mern?retryWrites=true&w=majority"
+    "mongodb+srv://davut:HI2PvqRev8VzVHzi@cluster0.bljn9yb.mongodb.net/mern?retryWrites=true&w=majority"
   )
   .then(() => {
     app.listen(5000);
