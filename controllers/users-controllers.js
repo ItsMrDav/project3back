@@ -9,12 +9,11 @@ const getUsers = async (req, res, next) => {
     users = await User.find({}, "-password");
   } catch (err) {
     const error = new HttpError(
-      "Fetching users failed, please try again later",
+      "Fetching users failed, please try again later.",
       500
     );
     return next(error);
   }
-
   res.json({ users: users.map((user) => user.toObject({ getters: true })) });
 };
 
@@ -22,7 +21,7 @@ const signup = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(
-      new HttpError("Invalid inputs passed,please check your data.", 422)
+      new HttpError("Invalid inputs passed, please check your data.", 422)
     );
   }
 
@@ -41,7 +40,7 @@ const signup = async (req, res, next) => {
 
   if (existingUser) {
     const error = new HttpError(
-      "User exists already, please login instead",
+      "User exists already, please login instead.",
       422
     );
     return next(error);
@@ -50,7 +49,7 @@ const signup = async (req, res, next) => {
   const createdUser = new User({
     name,
     email,
-    image: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+    image: req.file.path,
     password,
     places: [],
   });
@@ -58,7 +57,10 @@ const signup = async (req, res, next) => {
   try {
     await createdUser.save();
   } catch (err) {
-    const error = new HttpError("Signing up failed, please try again.", 500);
+    const error = new HttpError(
+      "Signing up failed, please try again later.",
+      500
+    );
     return next(error);
   }
 
@@ -69,11 +71,12 @@ const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   let existingUser;
+
   try {
     existingUser = await User.findOne({ email: email });
   } catch (err) {
     const error = new HttpError(
-      "Logging in failed, please try again later.",
+      "Loggin in failed, please try again later.",
       500
     );
     return next(error);
