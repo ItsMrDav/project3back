@@ -62,7 +62,7 @@ app.use((error, req, res, next) => {
 
 mongoose
   .connect(
-    "mongodb+srv://davut:HI2PvqRev8VzVHzi@cluster0.bljn9yb.mongodb.net/mern?retryWrites=true&w=majority"
+    `mongodb+srv://davut:HI2PvqRev8VzVHzi@cluster0.bljn9yb.mongodb.net/mern?retryWrites=true&w=majority`
   )
   .then(() => {
     app.listen(5000);
