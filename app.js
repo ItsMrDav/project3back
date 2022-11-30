@@ -65,7 +65,7 @@ mongoose
     `mongodb+srv://davut:HI2PvqRev8VzVHzi@cluster0.bljn9yb.mongodb.net/mern?retryWrites=true&w=majority`
   )
   .then(() => {
-    app.listen(5000);
+    app.listen(8080);
   })
   .catch((err) => {
     console.log(err);
