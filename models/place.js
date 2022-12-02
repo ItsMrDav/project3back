@@ -26,6 +26,11 @@ const placeSchema = new Schema({
     required: true,
     ref: "User",
   },
+  comments: {
+    type: [mongoose.Types.ObjectId],
+    required: true,
+    ref: "Comment",
+  },
 });
 
 const Place = model("Place", placeSchema);

@@ -2,13 +2,42 @@ const fs = require("fs");
 
 const { validationResult } = require("express-validator");
 const mongoose = require("mongoose");
-
+const Comment = require("../models/comment");
 const HttpError = require("../models/http-error");
 const getCoordsForAddress = require("../util/location");
 const Place = require("../models/place");
 const User = require("../models/user");
 
+// ---------------------------------------------COMMENTS  -----------------------------------------------------
+
+const getPlaceByIdAndComment = async (req, res, next) => {
+  const placeId = req.params.pid;
+
+  console.log(req.body);
+  const placeOfTheComment = await Place.findById(placeId);
+
+  const { title, description } = req.body;
+
+  // console.log(placeOfTheComment);
+  const createdComment = await Comment.create({
+    title,
+    description,
+    place: placeOfTheComment._id,
+    creator: req.userData.userId, // instead req.userData.userId "638749fcd732de9aff037479"
+  });
+
+  placeOfTheComment.comments.push(createdComment._id);
+  await placeOfTheComment.save();
+
+  res.json({ comment: createdComment.toObject({ getters: true }) });
+};
+
+// ==================================================================================================
+
+// --------------------------------------GET ALL USERS with PLACES ----------------------------------
+
 const getPlaceById = async (req, res, next) => {
+  console.log("get place");
   const placeId = req.params.pid;
 
   let place;
@@ -32,6 +61,10 @@ const getPlaceById = async (req, res, next) => {
 
   res.json({ place: place.toObject({ getters: true }) });
 };
+
+// ==================================================================================================================
+
+// --------------------------------- GET PLACES With SPECIFIC USER ----------------------------------
 
 const getPlacesByUserId = async (req, res, next) => {
   const userId = req.params.uid;
@@ -61,6 +94,10 @@ const getPlacesByUserId = async (req, res, next) => {
     ),
   });
 };
+
+// ==============================================================================================================
+
+// --------------------------------------------- CREATE PLACES -----------------------------------------------
 
 const createPlace = async (req, res, next) => {
   const errors = validationResult(req);
@@ -124,6 +161,10 @@ const createPlace = async (req, res, next) => {
   res.status(201).json({ place: createdPlace });
 };
 
+// ==========================================================================================================
+
+// ----------------------------------------------- UPDATE PLACES ------------------------------------
+
 const updatePlace = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -166,6 +207,10 @@ const updatePlace = async (req, res, next) => {
 
   res.status(200).json({ place: place.toObject({ getters: true }) });
 };
+
+// =========================================================================================================================
+
+// -----------------------------------------------------DELETE PLACE ----------------------------------------------------
 
 const deletePlace = async (req, res, next) => {
   const placeId = req.params.pid;
@@ -218,8 +263,11 @@ const deletePlace = async (req, res, next) => {
   res.status(200).json({ message: "Deleted place." });
 };
 
+// ===========================================================================================================================
+
 exports.getPlaceById = getPlaceById;
 exports.getPlacesByUserId = getPlacesByUserId;
 exports.createPlace = createPlace;
 exports.updatePlace = updatePlace;
 exports.deletePlace = deletePlace;
+exports.getPlaceByIdAndComment = getPlaceByIdAndComment;
